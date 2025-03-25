@@ -86,10 +86,11 @@ body {
   padding: 0;
   display:flex;
   flex-direction: column;
-  width: 80%;
+  
 }
 
 body {
+  width: 80%;
   margin: auto;
   border: 1px solid lightgrey;
   margin-top: 5px;
@@ -548,11 +549,17 @@ input[type="checkbox"] {
         </div>
         <div class="col-md-4 mb-3">
           <label for="acidRequired" class="form-label">ACID Required</label>
-          <input type="text" class="form-control" id="acidRequired">
+		  <select class="form-select" id="acidRequired">
+            <option>Yes</option>
+			<option>No</option>
+          </select>
         </div>
         <div class="col-md-4 mb-3">
           <label for="lcRequired" class="form-label">LC Required</label>
-          <input type="text" class="form-control" id="lcRequired">
+          <select class="form-select" id="lcRequired">
+            <option>Yes</option>
+			<option>No</option>
+          </select>
         </div>
         <!-- Row 5 -->
         <div class="col-md-4 mb-3">
@@ -583,8 +590,9 @@ input[type="checkbox"] {
         <!-- Row 1 -->
         <div class="col-md-4 mb-3">
           <label for="sourceSystem" class="form-label">Source System</label>
-          <select class="form-select" id="sourceSystem" disabled>
+          <select class="form-select" id="sourceSystem">
             <option>SAP</option>
+			<option>Oracle</option>
           </select>
         </div>
         <div class="col-md-4 mb-3">
@@ -593,14 +601,14 @@ input[type="checkbox"] {
         </div>
         <div class="col-md-4 mb-3">
           <label for="company" class="form-label">Company</label>
-          <select class="form-select" id="company" disabled>
+          <select class="form-select" id="company">
             <option>VF Data</option>
           </select>
         </div>
         <!-- Row 2 -->
         <div class="col-md-4 mb-3">
           <label for="category" class="form-label">Category</label>
-          <select class="form-select" id="category" disabled>
+          <select class="form-select" id="category">
             <option>Commercial</option>
           </select>
         </div>
@@ -1508,6 +1516,20 @@ input[type="checkbox"] {
         document.getElementById('ntraFields').style.display = (this.value === 'Yes') ? 'block' : 'none';
       });
       
+	  
+	  // Conditional display for ACID Required fields
+	  const acidRequired = document.getElementById('acidRequired');
+	  acidRequired.addEventListener('change', function() {
+        document.getElementById("acidNumber").closest("div").style.display = (this.value === 'Yes') ? 'block' : 'none';
+		document.getElementById("supplierRegData").closest("div").style.display = (this.value === 'Yes') ? 'block' : 'none';
+      });
+	  
+	  // Conditional display for LC Required fields
+	  const lcRequired = document.getElementById('lcRequired');
+	  lcRequired.addEventListener('change', function() {
+        document.getElementById("lcRequestDate").closest("div").style.display = (this.value === 'Yes') ? 'block' : 'none';
+		document.getElementById("lcReceiveDate").closest("div").style.display = (this.value === 'Yes') ? 'block' : 'none';
+      });
 
      
       
