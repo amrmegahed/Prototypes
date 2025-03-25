@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shipment Tracking Workflow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <!--link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet"-->
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  
+  
+  <!--
+  
+  Revised Colors to Match the Existing Theme:
+🔹 Submit Button (Primary Action Color)
+Instead of the bright blue I suggested earlier, let's go with a muted professional blue that blends better:
+
+Button Color: #385A7C (Deep Muted Blue – matches a corporate UI)
+Hover Effect: #2E4A66 (Slightly Darker Blue)
+Text Color: #FFFFFF (White for contrast)
+🔹 Footer Background (User Action Section)
+To keep it subtle but distinct, a soft gray-blue will work best:
+
+Background Color: #E8ECF1 (Soft Cool Gray-Blue, adds a gentle contrast)
+Border (Optional): #C4CBD4 (Medium Gray for separation)
+  -->
+  
+  
+  
+  <style>
+:root {
+  /* Professional color palette - warm neutral with accents */
+  /* 
+  --primary-color: #4f6d7a;
+  --primary-light: #eef5f7;
+  --primary-light-2: #eef5f7;
+  --primary-dark: #344955;
+  --secondary-color: #50514f;
+  --accent-color: #c17817;
+  --danger-color: #d04925;
+  --success-color: #3e885b;
+  --background-color: #f7f7f7;
+  --card-color: #ffffff;
+  --border-color: #e2e2e2;
+  --text-color: #333333;
+  --text-secondary: #6c757d;
+  --border-radius: 6px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+   */
+  --primary-color: #385A7C;
+  --primary-light: #E0E8EF;
+  --primary-light-2: #F0F4F8;
+  --primary-dark: #2A4864;
+  --secondary-color: #50514f;
+  --accent-color: #c17817;
+  --danger-color: #d04925;
+  --success-color: #3e885b;
+  --background-color: #F8F8F8;
+  --card-color: #ffffff;
+  --border-color: #D1D1D1;
+  --text-color: #333333;
+  --text-secondary: #6c757d;
+  --border-radius: 6px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
+  --transition: all 0.25s ease;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+		
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  display:flex;
+  flex-direction: column;
+}
+
+/* Main content container */
+.container-fluid {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+
+/* Card styles */
+.card-section {
+  background: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+}
+
+.card-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+div h5 {
+  font-family: 'Poppins', sans-serif;
+}
+
+.card-section h4 {
+  color: var(--primary-color);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Form styles */
+.form-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.form-control, .form-select {
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  transition: var(--transition);
+  font-size: 0.9rem;
+  color:var(--text-color);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 109, 122, 0.25);
+}
+
+.form-control:read-only, .form-control:disabled, .form-select:disabled {
+  background-color: var(--primary-light-2);
+  opacity: 0.85;
+}
+
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+/* Button styles */
+.btn {
+  border-radius: var(--border-radius);
+  padding: 0.45rem 1rem;
+  font-weight: 500;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.btn-warning {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+.btn-sm {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+}
+
+/* Tab styles */
+.nav-tabs {
+  border-bottom: none;
+  gap: 4px;
+}
+
+.nav-tabs .nav-link {
+  border: solid 1px var(--card-color);
+  background-color: var(--card-color);
+  color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  padding: 0.65rem 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  transition: var(--transition);
+  /*margin-bottom: 5px;*/
+  margin: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--box-shadow);
+  font-size: 0.9rem;
+}
+
+.nav-tabs .nav-link:hover {
+  transition: var(--transition);
+  color: var(--primary-color);
+  background-color: var(--primary-light);
+  border-color: var(--border-color);
+  
+}
+
+.nav-tabs .nav-link.active {
+  color: white;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Scrollable content area */
+.tab-content {
+  /*padding-bottom: 6rem;*/
+  padding-right:15px;
+  flex-grow: 1;
+  overflow-y: auto;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Table styles */
+.table {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  font-size: 0.9rem;
+}
+
+.table th {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  border-bottom: none;
+  padding: 0.75rem;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 0.65rem 0.75rem;
+}
+
+.table-bordered th, .table-bordered td {
+  border-color: var(--border-color);
+}
+
+.table-warning td {
+  background-color: rgba(193, 120, 23, 0.1);
+}
+
+.truncate {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Fixed action bar */
+.fixed-action-bar {
+  /*position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;*/
+  background: var(--background-color);
+  border-top: 1px solid var(--border-color);
+  padding: 1rem 1.5rem;
+  box-shadow: 0 -3px 8px rgba(200,200,200,0.15);
+  z-index: 1050;
+  transition: var(--transition);
+}
+
+.fixed-action-bar:hover {
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.12);
+}
+
+/* Modal styles */
+.modal-content {
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom: none;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.modal-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+#shipmentQtyModal{
+	background-color: #474747db;
+}
+
+.btn-close {
+  color: white;
+  filter: invert(1) brightness(2);
+}
+
+/* Action buttons */
+.action-btns {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+/* Layout improvements - Overview tab */
+.card-section h3 {
+  color: var(--primary-dark);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+  font-size: 0.9rem;
+}
+
+/* Table responsiveness improvements */
+.table-responsive {
+  border-radius: var(--border-radius);
+  /*overflow: hidden;*/
+}
+
+/* Scrollable table containers */
+.table-responsive[style*="max-height"] {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .nav-tabs .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .card-section {
+    padding: 1rem;
+  }
+  
+  .fixed-action-bar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.8rem;
+  }
+}
+.tracking-icon-container{
+	width: 20px;
+    height: 20px;
+    margin: auto;
+    position: relative;
+}
+.tracking-icon{
+    background-image:url(data:image/gif;base64,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);
+    background-size: 27px 27px;
+    width: 27px;
+    height: 27px;
+	display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container-fluid" style="margin-top: 1.5rem;">
+    
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs" id="shipmentTab" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+          <i class="fas fa-info-circle"></i> Shipment Overview
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="shippingFreight-tab" data-bs-toggle="tab" data-bs-target="#shippingFreight" type="button" role="tab" aria-controls="shippingFreight" aria-selected="false">
+          <i class="fas fa-truck-moving"></i> Shipping & Freight
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab" aria-controls="documents" aria-selected="false">
+          <i class="fas fa-file-alt"></i> Documents
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="clearance-tab" data-bs-toggle="tab" data-bs-target="#clearance" type="button" role="tab" aria-controls="clearance" aria-selected="false">
+          <i class="fas fa-check"></i> Clearance
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+          <i class="fas fa-history"></i> History Log
+        </button>
+      </li>
+    </ul>
+    
+    <!-- Tabs Content -->
+    <div class="tab-content" id="shipmentTabContent">
+      
+      <!-- Shipment Overview Tab -->
+<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+  <div class="mt-3">
+    <!-- Section #1: Shipment Details -->
+    <div class="card-section">
+      <h4><i class="fas fa-clipboard-list"></i> Shipment Details</h4>
+      <div class="row">
+        <!-- Row 1 -->
+        <div class="col-md-4 mb-3">
+          <label for="shipmentId" class="form-label">Shipment ID</label>
+          <input type="text" class="form-control" id="shipmentId" value="SHP-2023-0045" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="supplierName" class="form-label">Supplier Name</label>
+          <select class="form-select" id="supplierName" disabled>
+            <option>Supplier A</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="shipmentStage" class="form-label">Shipment Stage</label>
+          <select class="form-select" id="shipmentStage" disabled>
+            <option>Pending Shipping</option>
+          </select>
+        </div>
+        <!-- Row 2 -->
+        <div class="col-md-4 mb-3">
+          <label for="createdBy" class="form-label">Created By</label>
+          <input type="text" class="form-control" id="createdBy" value="User1" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="creationDate" class="form-label">Creation Date</label>
+          <input type="date" class="form-control" id="creationDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="packingListNo" class="form-label">Packing List Number</label>
+          <input type="text" class="form-control" id="packingListNo">
+        </div>
+        <!-- Row 3 -->
+        <div class="col-md-4 mb-3">
+          <label for="invoiceNo" class="form-label">Invoice Number</label>
+          <input type="text" class="form-control" id="invoiceNo">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="invoiceAmount" class="form-label">Invoice Amount</label>
+          <input type="number" class="form-control" id="invoiceAmount">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="invoiceCurrency" class="form-label">Currency</label>
+          <select class="form-select" id="invoiceCurrency">
+            <option>USD</option>
+          </select>
+        </div>
+        <!-- Row 4 -->
+        <div class="col-md-4 mb-3">
+          <label for="incoTerm" class="form-label">IncoTerm</label>
+          <select class="form-select" id="incoTerm">
+            <option>DAP</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="acidRequired" class="form-label">ACID Required</label>
+          <input type="text" class="form-control" id="acidRequired">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="lcRequired" class="form-label">LC Required</label>
+          <input type="text" class="form-control" id="lcRequired">
+        </div>
+        <!-- Row 5 -->
+        <div class="col-md-4 mb-3">
+          <label for="acidNumber" class="form-label">ACID #</label>
+          <input type="text" class="form-control" id="acidNumber">
+        </div>
+        <div class="col-md-8 mb-3">
+          <label for="supplierRegData" class="form-label">Supplier Registration Data</label>
+          <textarea class="form-control" id="supplierRegData" rows="2"></textarea>
+        </div>
+        <!-- Row 6 -->
+        <div class="col-md-4 mb-3">
+          <label for="lcRequestDate" class="form-label">LC Request Date</label>
+          <input type="date" class="form-control" id="lcRequestDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="lcReceiveDate" class="form-label">LC Receive Date</label>
+          <input type="date" class="form-control" id="lcReceiveDate">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column for N/A -->
+      </div>
+    </div>
+
+    <!-- Section #2: Additional Shipment Info -->
+    <div class="card-section">
+      <h4><i class="fas fa-cogs"></i> Additional Shipment Info</h4>
+      <div class="row">
+        <!-- Row 1 -->
+        <div class="col-md-4 mb-3">
+          <label for="sourceSystem" class="form-label">Source System</label>
+          <select class="form-select" id="sourceSystem" disabled>
+            <option>SAP</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="supplierId" class="form-label">Supplier ID</label>
+          <input type="text" class="form-control" id="supplierId" value="SUP-001" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="company" class="form-label">Company</label>
+          <select class="form-select" id="company" disabled>
+            <option>VF Data</option>
+          </select>
+        </div>
+        <!-- Row 2 -->
+        <div class="col-md-4 mb-3">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-select" id="category" disabled>
+            <option>Commercial</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="fccAssignee" class="form-label">FCC Assignee</label>
+          <input type="text" class="form-control" id="fccAssignee" value="John Doe" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="freightAgent" class="form-label">Freight Agent Company</label>
+          <input type="text" class="form-control" id="freightAgent" value="DHL">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section #3: Shipment Items -->
+    <div class="card-section">
+      <h4><i class="fas fa-list"></i> Shipment Items</h4>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="itemsSource" class="form-label">Items Source</label>
+          <select class="form-select" id="itemsSource">
+            <option value="PO">PO</option>
+            <option value="FOC">FOC</option>
+            <option value="Trial">Trial</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3 d-flex align-items-end">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+            <i class="fas fa-plus"></i> Add Item
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered" id="shipmentItemsTable">
+          <thead>
+            <tr>
+              <th>PO #</th>
+              <th>Item Seq.</th>
+              <th>Item/Material No.</th>
+              <th>Description</th>
+              <th>PO Qty</th>
+              <th>Planned Delivery Date</th>
+              <th>Shipment Qty</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PO12345</td>
+              <td>1</td>
+              <td>MAT-001</td>
+              <td>Sample Item with a very long description to test overflow</td>
+              <td>100</td>
+              <td>2023-08-15</td>
+              <td>90</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+                  <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                  <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="d-flex justify-content-between mt-2">
+          <span class="text-secondary">Showing 1 to 5 of 10 entries</span>
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Item Modal -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Section 1: PO Number and Get PO Details Button -->
+        <div class="mb-4">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="poNumber" class="form-label">PO Number</label>
+              <select class="form-select" id="poNumber">
+                <option value="">Select PO Number</option>
+                <option value="3005109073">3005109073</option>
+                <option value="470061584">470061584</option>
+                <!-- Add more hardcoded options as needed -->
+              </select>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button class="btn btn-primary" id="getPoDetailsBtn">Get PO Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: PO Details (Read-Only) -->
+        <div class="mb-4" id="poDetailsSection" style="display: none;">
+          <h6>PO Details</h6>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">PO Date</label>
+              <input type="text" class="form-control" id="poDate" readonly>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Created By</label>
+              <input type="text" class="form-control" id="createdBy" readonly>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">PO Value</label>
+              <input type="text" class="form-control" id="poValue" readonly>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Currency</label>
+              <input type="text" class="form-control" id="currency" readonly>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">IncoTerm</label>
+              <input type="text" class="form-control" id="incoTerm" readonly>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Ship To Location</label>
+              <input type="text" class="form-control" id="shipToLocation" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: PO Items Table with Search and Pagination -->
+        <div id="poItemsSection" style="display: none;">
+          <h6>PO Items</h6>
+          <div class="mb-3">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search by Item / Material No. or Description">
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered" id="poItemsTable">
+              <thead>
+                <tr>
+                  <th>Seq. No.</th>
+                  <th>Item / Material No.</th>
+                  <th>Item Description</th>
+                  <th>PO Qty</th>
+                  <th>Unit Price</th>
+                  <th>Total Price</th>
+                  <th>Planned Delivery Date</th>
+                  <th>Pending Qty</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Items will be dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between mt-2" id="paginationControls" style="display: none;">
+            <span id="pageInfo"></span>
+            <nav>
+              <ul class="pagination" id="paginationLinks"></ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Nested Modal for Shipment Qty Input -->
+<div class="modal fade" id="shipmentQtyModal" tabindex="-1" aria-labelledby="shipmentQtyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shipmentQtyModalLabel">Enter Shipment Quantity</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="shipmentQty" class="form-label">Shipment Qty</label>
+          <input type="number" class="form-control" id="shipmentQty" min="1">
+          <div class="invalid-feedback" id="shipmentQtyError"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="addToShipmentBtn">Add to Shipment Items</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  
+	  
+	  <!-- Shipping & Freight Tab -->
+      <div class="tab-pane fade" id="shippingFreight" role="tabpanel" aria-labelledby="shippingFreight-tab">
+		  <div class="mt-3">
+			<!-- Shipping Details Section -->
+			<div class="card-section">
+			  <h4><i class="fas fa-shipping-fast"></i> Shipping Details</h4>
+			  <div class="row">
+				<!-- Row 1 -->
+				<div class="col-md-4 mb-3">
+					<div class="form-group">
+					  <label for="pickupAddress" class="form-label">Pickup Address</label>
+					  <textarea class="form-control" id="pickupAddress"  rows="5" style="height: 100%;"></textarea>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="row">
+						<div class="col-md-6 mb-3"> 
+							<div class="form-group">
+								<label for="pickupDate" class="form-label">Pickup Date</label>
+								<input type="date" class="form-control" id="pickupDate">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3"> 
+							<div class="form-group">
+								<label for="shippingDate" class="form-label">Shipping Date</label>
+								<input type="date" class="form-control" id="shippingDate">
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3"> 
+							<div class="form-group">
+								<label for="portOfOrigin" class="form-label">Port of Origin</label>
+								<input type="text" class="form-control" id="portOfOrigin">
+							</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<div class="form-group">
+								<label for="portOfDischarge" class="form-label">Port of Discharge</label>
+								<input type="text" class="form-control" id="portOfDischarge">
+							</div>
+						</div>
+					</div>
+				</div>
+			  </div>
+
+			  <div class="row">
+				<!-- Row 3 -->
+				<div class="col-md-4 mb-3">
+				  <label for="noOfPallets" class="form-label">No. of Pallets</label>
+				  <input type="number" class="form-control" id="noOfPallets">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="grossWeight" class="form-label">Gross Weight</label>
+				  <input type="text" class="form-control" id="grossWeight">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="isStackable" class="form-label">Is Stackable?</label>
+				  <select class="form-select" id="isStackable">
+					<option>Yes</option>
+					<option>No</option>
+				  </select>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Freight Details Section -->
+			<div class="card-section">
+			  <h4>
+				<i class="fas fa-truck"></i> Freight Details
+				
+				<a href="https://flow.cargoes.com/_tracking_shipment?token=8m3tbg672a" class="ms-auto text-primary small" target="_blank" rel="noopener noreferrer" style="display: flex;align-items: center;gap:8px">
+					<span class="tracking-icon-container"><i class="tracking-icon"></i></span>
+					Tracking on CARGOES Flow
+					<i class="fas fa-external-link-alt external-icon"></i>
+				</a>
+			  </h4>
+			  <div class="row">
+				<!-- Row 1 -->
+				<div class="col-md-4 mb-3">
+				  <label for="freightType" class="form-label">Freight Type</label>
+				  <select class="form-select" id="freightType">
+					<option>Air</option>
+					<option>Sea</option>
+					<option>Land</option>
+				  </select>
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="masterBillOfLading" class="form-label">Master Bill of Lading</label>
+				  <input type="text" class="form-control" id="masterBillOfLading">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="houseBillOfLading" class="form-label">House Bill of Lading</label>
+				  <input type="text" class="form-control" id="houseBillOfLading">
+				</div>
+			  </div>
+			  <div class="row">
+				<!-- Row 2 -->
+				<div class="col-md-4 mb-3">
+				  <label for="carrierName" class="form-label">Carrier Name</label>
+				  <select class="form-select" id="carrierName">
+					<option>Carrier A</option>
+					<option>Carrier B</option>
+					<option>Carrier C</option>
+				  </select>
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="actualDepartureDate" class="form-label">Actual Departure Date</label>
+				  <input type="date" class="form-control" id="actualDepartureDate">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="estimateTimeOfArrival" class="form-label">Estimate Time of Arrival</label>
+				  <input type="date" class="form-control" id="estimateTimeOfArrival">
+				</div>
+			  </div>
+			  <div class="row">
+				<!-- Row 3 -->
+				<div class="col-md-4 mb-3">
+				  <label for="container20" class="form-label">Container 20</label>
+				  <input type="number" class="form-control" id="container20">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="container40" class="form-label">Container 40</label>
+				  <input type="number" class="form-control" id="container40">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="totalContainers" class="form-label">Total Containers</label>
+				  <input type="number" class="form-control" id="totalContainers">
+				</div>
+			  </div>
+			  <div class="row">
+				<!-- Row 4 -->
+				<div class="col-md-4 mb-3">
+				  <label for="finalShipmentWeight" class="form-label">Final Shipment Weight</label>
+				  <input type="text" class="form-control" id="finalShipmentWeight">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="freeDaysStorage" class="form-label">Free No. of Days for Storage</label>
+				  <input type="number" class="form-control" id="freeDaysStorage">
+				</div>
+				<div class="col-md-4 mb-3">
+				  <label for="freeDaysDemurrage" class="form-label">Free No. of Days for Demurrage</label>
+				  <input type="number" class="form-control" id="freeDaysDemurrage">
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+      
+      <!-- Documents Tab -->
+      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+		  <div class="mt-3">
+			<!-- Shipment Documents Checklist -->
+			<div class="card-section">
+			  <h4><i class="fas fa-clipboard-check"></i> Shipment Documents Checklist</h4>
+			  <div class="row">
+				<!-- DRAFT Documents Checklist -->
+				<div class="col-md-6">
+				  <h5>DRAFT Documents</h5>
+				  <div class="table-responsive">
+					<table class="table table-bordered table-hover">
+					  <thead>
+						<tr>
+						  <th>Document Type</th>
+						  <th>Status</th>
+						  <th>Actions</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						<tr>
+						  <td>Original Certified Invoice</td>
+						  <td><i class="fas fa-check text-success"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+						<tr class="table-danger">
+						  <td>Summary of Packing List <span class="text-danger">*</span></td>
+						  <td><i class="fas fa-times text-danger"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+						<tr>
+						  <td>Bill Of Lading / Airway Bill</td>
+						  <td><i class="fas fa-times text-danger"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+					  </tbody>
+					</table>
+				  </div>
+				</div>
+				<!-- FINAL Documents Checklist -->
+				<div class="col-md-6">
+				  <h5>FINAL Documents</h5>
+				  <div class="table-responsive">
+					<table class="table table-bordered table-hover">
+					  <thead>
+						<tr>
+						  <th>Document Type</th>
+						  <th>Status</th>
+						  <th>Actions</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						<tr>
+						  <td>Original Certified Invoice <span class="text-danger">*</span></td>
+						  <td><i class="fas fa-check text-success"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+						<tr class="table-danger">
+						  <td>Summary of Packing List <span class="text-danger">*</span></td>
+						  <td><i class="fas fa-times text-danger"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+						<tr>
+						  <td>Bill Of Lading / Airway Bill</td>
+						  <td><i class="fas fa-check text-success"></i></td>
+						  <td><button class="btn btn-sm btn-outline-primary" title="Upload"><i class="fas fa-upload"></i></button></td>
+						</tr>
+					  </tbody>
+					</table>
+				  </div>
+				</div>
+			  </div>
+			  <p class="mt-2 text-secondary"><small>* Documents marked with an asterisk are required for processing.</small></p>
+			</div>
+			<!-- Attached Documents -->
+			<div class="card-section">
+			  <h4><i class="fas fa-file"></i> Attached Documents</h4>
+			  <div class="mb-3">
+				<button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Document</button>
+			  </div>
+			  <div class="table-responsive">
+				<table class="table table-bordered table-hover">
+				  <thead>
+					<tr>
+					  <th>Document Name</th>
+					  <th>Document Type</th>
+					  <th>Actions</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <td>invoice.pdf</td>
+					  <td>Original Certified Invoice</td>
+					  <td>
+						<button class="btn btn-sm btn-outline-secondary" title="View"><i class="fas fa-eye"></i></button>
+						<button class="btn btn-sm btn-outline-primary" title="Download"><i class="fas fa-download"></i></button>
+						<button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+					  </td>
+					</tr>
+					<tr>
+					  <td>packing_list_draft.docx</td>
+					  <td>Summary of Packing List</td>
+					  <td>
+						<button class="btn btn-sm btn-outline-secondary" title="View"><i class="fas fa-eye"></i></button>
+						<button class="btn btn-sm btn-outline-primary" title="Download"><i class="fas fa-download"></i></button>
+						<button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+					  </td>
+					</tr>
+					<tr>
+					  <td>extra_note.txt</td>
+					  <td>Other</td>
+					  <td>
+						<button class="btn btn-sm btn-outline-secondary" title="View"><i class="fas fa-eye"></i></button>
+						<button class="btn btn-sm btn-outline-primary" title="Download"><i class="fas fa-download"></i></button>
+						<button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+					  </td>
+					</tr>
+				  </tbody>
+				</table>
+			  </div>
+			</div>
+		  </div>
+		</div>
+      <!-- Clearance Tab -->
+	  <div class="tab-pane fade" id="clearance" role="tabpanel" aria-labelledby="clearance-tab">
+  <div class="mt-3">
+    <!-- Customs Clearance Details Section -->
+    <div class="card-section">
+      <h4><i class="fas fa-stamp"></i> Customs Clearance Details</h4>
+      <!-- Row 1 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="clearingAgent" class="form-label">Clearing Agent</label>
+          <select class="form-select" id="clearingAgent">
+            <option>Agent A</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="docsReceivedDate" class="form-label">Date Docs Received By Agent</label>
+          <input type="date" class="form-control" id="docsReceivedDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="actualArrivalTime" class="form-label">Actual Time of Arrival</label>
+          <input type="date" class="form-control" id="actualArrivalTime">
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="form4Required" class="form-label">Form 4 Required</label>
+          <select class="form-select" id="form4Required">
+            <option value="No">No</option>
+            <option value="Yes" selected>Yes</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="freightDays" class="form-label">Freight # of Days</label>
+          <input type="number" class="form-control" id="freightDays">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="freeDaysLastDay" class="form-label">Free Days Last Day Date</label>
+          <input type="date" class="form-control" id="freeDaysLastDay" readonly>
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="row" id="form4DatesRow">
+        <div class="col-md-4 mb-3">
+          <label for="form4RequestDate" class="form-label">Form 4 Request Date</label>
+          <input type="date" class="form-control" id="form4RequestDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="form4ReceivedDate" class="form-label">Form 4 Received Date</label>
+          <input type="date" class="form-control" id="form4ReceivedDate">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column -->
+      </div>
+      <!-- Row 4 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="deliveryOrderDate" class="form-label">Delivery Order Date</label>
+          <input type="date" class="form-control" id="deliveryOrderDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="openCertificateDate" class="form-label">Open Certificate Date</label>
+          <input type="date" class="form-control" id="openCertificateDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="customsCertificate" class="form-label">Customs Certificate Number</label>
+          <input type="text" class="form-control" id="customsCertificate">
+        </div>
+      </div>
+      <!-- Row 5 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="inspectionStartDate" class="form-label">Inspection Start Date</label>
+          <input type="date" class="form-control" id="inspectionStartDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="inspectionEndDate" class="form-label">Inspection End Date</label>
+          <input type="date" class="form-control" id="inspectionEndDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="ntraInspectionRequired" class="form-label">NTRA Required</label>
+          <select class="form-select" id="ntraInspectionRequired">
+            <option value="No">No</option>
+            <option value="Yes" selected>Yes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- NTRA Inspection Details Section -->
+    <div class="card-section" id="ntraFields">
+      <h4><i class="fas fa-search"></i> NTRA Inspection Details</h4>
+      <!-- Row 1 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="ntraStartDate" class="form-label">NTRA Start Date</label>
+          <input type="date" class="form-control" id="ntraStartDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="ntraRequestNumber" class="form-label">NTRA Request Number</label>
+          <input type="text" class="form-control" id="ntraRequestNumber">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column -->
+      </div>
+      <!-- Row 2 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="ntraTesting" class="form-label">NTRA Testing</label>
+          <select class="form-select" id="ntraTesting">
+            <option value="Required">Required</option>
+            <option value="Not Required">Not Required</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="typeApproval" class="form-label">Type Approval</label>
+          <select class="form-select" id="typeApproval">
+            <option value="Required">Required</option>
+            <option value="Not Required">Not Required</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="nationalSecurity" class="form-label">National Security</label>
+          <select class="form-select" id="nationalSecurity">
+            <option value="Required">Required</option>
+            <option value="Not Required">Not Required</option>
+          </select>
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="testingStartDate" class="form-label">Testing Start Date</label>
+          <input type="date" class="form-control" id="testingStartDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="testingCompletionDate" class="form-label">Testing Completion Date</label>
+          <input type="date" class="form-control" id="testingCompletionDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="typeApprovalNumber" class="form-label">Type Approval Number</label>
+          <input type="text" class="form-control" id="typeApprovalNumber">
+        </div>
+      </div>
+      <!-- Row 4 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="typeApprovalFees" class="form-label">Type Approval Fees</label>
+          <input type="number" class="form-control" id="typeApprovalFees">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="typeApprovalStartDate" class="form-label">Type Approval Start Date</label>
+          <input type="date" class="form-control" id="typeApprovalStartDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="typeApprovalCompletionDate" class="form-label">Type Approval Completion Date</label>
+          <input type="date" class="form-control" id="typeApprovalCompletionDate">
+        </div>
+      </div>
+      <!-- Row 5 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="nationalSecurityStartDate" class="form-label">Nation Security Start Date</label>
+          <input type="date" class="form-control" id="nationalSecurityStartDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="nationalSecurityCompletionDate" class="form-label">National Security Completion Date</label>
+          <input type="date" class="form-control" id="nationalSecurityCompletionDate">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column -->
+      </div>
+      <!-- Row 6 -->
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="ntraPendingRequirements" class="form-label">NTRA Pending Requirements</label>
+          <textarea class="form-control" id="ntraPendingRequirements" rows="3"></textarea>
+        </div>
+      </div>
+      <!-- Row 7 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="ntraFinalDecision" class="form-label">NTRA Final Decision</label>
+          <select class="form-select" id="ntraFinalDecision">
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="ntraFinalDecisionDate" class="form-label">NTRA Final Decision Date</label>
+          <input type="date" class="form-control" id="ntraFinalDecisionDate">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column -->
+      </div>
+    </div>
+
+    <!-- Duties, Fees & Financial Deductions Section -->
+    <div class="card-section">
+      <h4><i class="fas fa-dollar-sign"></i> Duties, Fees & Financial Deductions</h4>
+      <!-- Row 1 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="vatDeducted" class="form-label">VAT Deducted Amount</label>
+          <input type="number" class="form-control" id="vatDeducted">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="dutiesAmount" class="form-label">Duties Amount</label>
+          <input type="number" class="form-control" id="dutiesAmount">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="otherCustomsFees" class="form-label">Other Customs Fees</label>
+          <input type="number" class="form-control" id="otherCustomsFees">
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="totalDeductions" class="form-label">Total Deductions</label>
+          <input type="number" class="form-control" id="totalDeductions">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Deduction Form Attached</label>
+          <div class="d-flex align-items-center">
+            <input type="checkbox" class="form-check-input me-2" id="deductionFormCheckbox">
+            <button class="btn btn-primary btn-sm">Upload</button>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="deductionFormDate" class="form-label">Deduction Form Date</label>
+          <input type="date" class="form-control" id="deductionFormDate">
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="deductionConfirmationDate" class="form-label">Deduction Confirmation Date</label>
+          <input type="date" class="form-control" id="deductionConfirmationDate">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="deductionDate" class="form-label">Deduction Date</label>
+          <input type="date" class="form-control" id="deductionDate">
+        </div>
+        <div class="col-md-4 mb-3"></div> <!-- Empty column -->
+      </div>
+      <!-- Row 4 -->
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="storageAmount" class="form-label">Storage Amount (USD)</label>
+          <input type="number" class="form-control" id="storageAmount">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="demurrageAmount" class="form-label">Demurrage Amount (USD)</label>
+          <input type="number" class="form-control" id="demurrageAmount">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="totalStorageDemurrage" class="form-label">Total Storage & Demurrage (USD)</label>
+          <input type="number" class="form-control" id="totalStorageDemurrage" readonly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post-Clearance Logistics & Notes Section -->
+	<div class="card-section">
+	  <h4><i class="fas fa-truck"></i> Post-Clearance Logistics & Notes</h4>
+	  <div class="row">
+		<!-- Delivery Location & Contact Person Details -->
+		<div class="col-md-4 mb-3">
+		  <label for="deliveryLocation" class="form-label">Delivery Location & Contact Person Details</label>
+		  <textarea class="form-control" id="deliveryLocation" rows="5"></textarea>
+		</div>
+		<!-- Additional Notes -->
+		<div class="col-md-4 mb-3">
+		  <label for="additionalNotes" class="form-label">Additional Notes</label>
+		  <textarea class="form-control" id="additionalNotes" rows="5"></textarea>
+		</div>
+		<!-- Releasing Date and Delivery to Warehouse Date (stacked) -->
+		<div class="col-md-4 mb-3">
+		  <div class="form-group">
+			<label for="releasingDate" class="form-label">Releasing Date</label>
+			<input type="date" class="form-control" id="releasingDate">
+		  </div>
+		  <div class="form-group mt-3">
+			<label for="deliveryWHDate" class="form-label">Delivery to Warehouse Date</label>
+			<input type="date" class="form-control" id="deliveryWHDate">
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>
+	 
+      <!-- History Log Tab -->
+      <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+        <div class="mt-3">
+          <div id="historyCard" class="card-section">
+            <h4><i class="fas fa-history"></i> Workflow History Log</h4>
+            <div class="mb-3">
+              <button class="btn btn-primary"><i class="fas fa-file-excel"></i> Export to Excel</button>
+            </div>
+            <div class="table-responsive" style="overflow-y: auto;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Step No.</th>
+                    <th>Date/Time</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Action Taken</th>
+                    <th>Comments</th>
+                    <th>View</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr>
+                    <td>1</td>
+                    <td>2023-08-10 10:15</td>
+                    <td>user1</td>
+                    <td>Admin</td>
+                    <td>Created Shipment</td>
+                    <td class="truncate">This is a very long comment that might not fit in the table cell and should be truncated.</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary view-comment" data-comment="This is a very long comment that might not fit in the table cell and should be truncated."><i class="fas fa-eye"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>2023-08-11 14:30</td>
+                    <td>user2</td>
+                    <td>Operator</td>
+                    <td>Forwarded Shipment</td>
+                    <td class="truncate">Forwarded to supplier with additional remarks that are quite lengthy.</td>
+                    <td>
+                      <button class="btn btn-sm btn-primary view-comment" data-comment="Forwarded to supplier with additional remarks that are quite lengthy."><i class="fas fa-eye"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Fixed User Action Bar -->
+  <div class="fixed-action-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-4 mb-2">
+          <label for="userAction" class="form-label">User Action</label>
+          <select class="form-select" id="userAction">
+            <option value="">Select Action</option>
+            <option value="forward">Forward To Supplier</option>
+            <option value="approve">Approve</option>
+            <option value="reject">Reject</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label for="userComments" class="form-label">Comments</label>
+          <textarea class="form-control" id="userComments" placeholder="Enter your comments"></textarea>
+        </div>
+        <!--div class="col-md-2 text-end mb-2"-->
+		<!--button class="btn btn-primary w-100" id="submitAction"><i class="fas fa-paper-plane"></i> Submit</button-->
+		<div class="col-md-2 mt-2" style="text-align:center">
+          <button class="btn btn-primary w-50" id="submitAction" style="justify-content: center"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Comment Modal -->
+  <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentModalLabel">Full Comment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalCommentBody">
+          <!-- Full comment text will be displayed here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  // Add this to your existing document.addEventListener('DOMContentLoaded', function() {...})
+/*function adjustTabPaneHeight() {
+  //const headerHeight = document.querySelector('.app-header').offsetHeight;
+  const actionBarHeight = document.querySelector('.fixed-action-bar').offsetHeight;
+  const viewportHeight = window.innerHeight;
+  const tabHeight = viewportHeight - /*headerHeight -/ actionBarHeight - 90; // 40px for margins
+  //alert(actionBarHeight+'-'+viewportHeight);
+  document.querySelectorAll('.tab-pane').forEach(pane => {
+    pane.style.height = `${tabHeight}px`;
+  });
+  document.getElementById('historyCard').style.height = `${tabHeight}px`;
+}*/
+
+// Call on load and resize
+//adjustTabPaneHeight();
+//window.addEventListener('resize', adjustTabPaneHeight);
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show/hide Shipment Items section based on Items Source selection
+      const itemsSource = document.getElementById('itemsSource');
+      const shipmentItemsSection = document.getElementById('shipmentItemsSection');
+      itemsSource.addEventListener('change', function() {
+        shipmentItemsSection.style.display = (this.value === 'PO') ? 'block' : 'none';
+      });
+      
+      // Conditional display for Form #4 fields
+      const form4Required = document.getElementById('form4Required');
+      form4Required.addEventListener('change', function() {
+        const show = this.value === 'Yes';
+        document.getElementById('form4DatesRow').style.display = show ? '' : 'none';
+      });
+      
+      // Conditional display for NTRA Inspection fields
+      const ntraInspectionRequired = document.getElementById('ntraInspectionRequired');
+      ntraInspectionRequired.addEventListener('change', function() {
+        document.getElementById('ntraFields').style.display = (this.value === 'Yes') ? 'block' : 'none';
+      });
+      
+
+     
+      
+      // Auto-calculate fields for Other Customs Fees and Total Storage & Demurrage
+      function calculateAutoFields() {
+        document.getElementById('otherCustomsFees').value = 100; // placeholder value
+        const storage = parseFloat(document.getElementById('storageAmount').value) || 0;
+        const demurrage = parseFloat(document.getElementById('demurrageAmount').value) || 0;
+        document.getElementById('totalStorageDemurrage').value = storage + demurrage;
+      }
+      
+      document.getElementById('storageAmount').addEventListener('input', calculateAutoFields);
+      document.getElementById('demurrageAmount').addEventListener('input', calculateAutoFields);
+      
+      // Submit Action Handler
+      document.getElementById('submitAction').addEventListener('click', function() {
+        const action = document.getElementById('userAction').value;
+        const comments = document.getElementById('userComments').value;
+        if (!action) {
+          alert('Please select an action.');
+          return;
+        }
+        // Placeholder for submission logic (AJAX, etc.)
+        alert('Action: ' + action + '\nComments: ' + comments);
+      });
+      
+      // Comment Modal Handler
+      const commentModal = new bootstrap.Modal(document.getElementById('commentModal'));
+      document.querySelectorAll('.view-comment').forEach(function(button) {
+        button.addEventListener('click', function() {
+          const comment = this.getAttribute('data-comment');
+          document.getElementById('modalCommentBody').innerText = comment;
+          commentModal.show();
+        });
+      });
+    });
+  </script>
+  
+  
+  
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // DOM Elements
+  const poNumberSelect = document.getElementById('poNumber');
+  const getPoDetailsBtn = document.getElementById('getPoDetailsBtn');
+  const poDetailsSection = document.getElementById('poDetailsSection');
+  const poItemsSection = document.getElementById('poItemsSection');
+  const searchInput = document.getElementById('searchInput');
+  const poItemsTable = document.getElementById('poItemsTable').querySelector('tbody');
+  const paginationControls = document.getElementById('paginationControls');
+  const pageInfo = document.getElementById('pageInfo');
+  const paginationLinks = document.getElementById('paginationLinks');
+  const shipmentQtyModal = new bootstrap.Modal(document.getElementById('shipmentQtyModal'));
+  const shipmentQtyInput = document.getElementById('shipmentQty');
+  const shipmentQtyError = document.getElementById('shipmentQtyError');
+  const addToShipmentBtn = document.getElementById('addToShipmentBtn');
+
+  // Pagination variables
+  let currentPage = 1;
+  const itemsPerPage = 5;
+  let allItems = [];
+  let filteredItems = [];
+  let selectedItem = null;
+
+  // Simulated PO data (replace with actual API call in production)
+  const poData = {
+    '3005109073': {
+      details: {
+        poDate: '20/04/2025',
+        createdBy: 'Hussein Ibrahim',
+        poValue: '545,000',
+        currency: 'EUR',
+        incoTerm: 'DAP',
+        shipToLocation: 'Self Service TEL'
+      },
+      items: [
+        { seq: 1, materialNo: '586777478', description: 'Telecom Equipment', poQty: 30, unitPrice: '5,000', totalPrice: '150,000', plannedDelivery: '10/08/2025', pendingQty: 12 },
+        { seq: 2, materialNo: '554532741', description: 'Telecom Sets', poQty: 7, unitPrice: '10,000', totalPrice: '70,000', plannedDelivery: '17/08/2025', pendingQty: 3 },
+        { seq: 3, materialNo: '94827471', description: 'Telecom Devices', poQty: 3, unitPrice: '4,000', totalPrice: '12,000', plannedDelivery: '26/05/2025', pendingQty: 0 },
+		{ seq: 4, materialNo: '586777479', description: 'Telecom 1', poQty: 30, unitPrice: '5,000', totalPrice: '150,000', plannedDelivery: '10/08/2025', pendingQty: 12 },
+        { seq: 5, materialNo: '554537741', description: 'Telecom 2', poQty: 7, unitPrice: '10,000', totalPrice: '70,000', plannedDelivery: '17/08/2025', pendingQty: 3 },
+        { seq: 6, materialNo: '94825471', description: 'Telecom 3', poQty: 3, unitPrice: '4,000', totalPrice: '12,000', plannedDelivery: '26/05/2025', pendingQty: 0 },
+		{ seq: 7, materialNo: '586777478', description: 'Telecom Equipment', poQty: 30, unitPrice: '5,000', totalPrice: '150,000', plannedDelivery: '10/08/2025', pendingQty: 12 },
+        { seq: 8, materialNo: '554532741', description: 'Telecom Sets', poQty: 7, unitPrice: '10,000', totalPrice: '70,000', plannedDelivery: '17/08/2025', pendingQty: 3 },
+        { seq: 9, materialNo: '94827471', description: 'Telecom Devices', poQty: 3, unitPrice: '4,000', totalPrice: '12,000', plannedDelivery: '26/05/2025', pendingQty: 0 },
+		{ seq: 10, materialNo: '586777479', description: 'Telecom 1', poQty: 30, unitPrice: '5,000', totalPrice: '150,000', plannedDelivery: '10/08/2025', pendingQty: 12 },
+        { seq: 11, materialNo: '554537741', description: 'Telecom 2', poQty: 7, unitPrice: '10,000', totalPrice: '70,000', plannedDelivery: '17/08/2025', pendingQty: 3 },
+        { seq: 12, materialNo: '94825471', description: 'Telecom 3', poQty: 3, unitPrice: '4,000', totalPrice: '12,000', plannedDelivery: '26/05/2025', pendingQty: 0 },
+      ]
+    },
+    '470061584': {
+      details: {
+        poDate: '15/03/2025',
+        createdBy: 'Jane Doe',
+        poValue: '300,000',
+        currency: 'USD',
+        incoTerm: 'FOB',
+        shipToLocation: 'Warehouse A'
+      },
+      items: [
+        { seq: 1, materialNo: '123456789', description: 'Network Router', poQty: 50, unitPrice: '2,000', totalPrice: '100,000', plannedDelivery: '01/09/2025', pendingQty: 20 },
+      ]
+    }
+  };
+
+  // Render PO Details
+  function renderPoDetails(details) {
+    document.getElementById('poDate').value = details.poDate;
+    document.getElementById('createdBy').value = details.createdBy;
+    document.getElementById('poValue').value = details.poValue;
+    document.getElementById('currency').value = details.currency;
+    document.getElementById('incoTerm').value = details.incoTerm;
+    document.getElementById('shipToLocation').value = details.shipToLocation;
+  }
+
+  // Render PO Items Table
+  function renderPoItems(items, page = 1) {
+    poItemsTable.innerHTML = '';
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedItems = items.slice(start, end);
+
+    paginatedItems.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.seq}</td>
+        <td>${item.materialNo}</td>
+        <td>${item.description}</td>
+        <td>${item.poQty}</td>
+        <td>${item.unitPrice}</td>
+        <td>${item.totalPrice}</td>
+        <td>${item.plannedDelivery}</td>
+        <td>${item.pendingQty}</td>
+        <td>
+          ${item.pendingQty > 0 ? `<button class="btn btn-sm btn-primary add-btn" data-item='${JSON.stringify(item)}'>ADD</button>` : ''}
+        </td>
+      `;
+      poItemsTable.appendChild(row);
+    });
+
+    renderPagination(items.length, page);
+  }
+
+  // Render Pagination Controls
+  function renderPagination(totalItems, currentPage) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    paginationLinks.innerHTML = '';
+
+    if (totalPages > 1) {
+      // Previous button
+      const prevLi = document.createElement('li');
+      prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+      prevLi.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+      prevLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage > 1) {
+          renderPoItems(filteredItems, currentPage - 1);
+        }
+      });
+      paginationLinks.appendChild(prevLi);
+
+      // Page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        const pageLi = document.createElement('li');
+        pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        pageLi.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderPoItems(filteredItems, i);
+        });
+        paginationLinks.appendChild(pageLi);
+      }
+
+      // Next button
+      const nextLi = document.createElement('li');
+      nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+      nextLi.innerHTML = `<a class="page-link" href="#">Next</a>`;
+      nextLi.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (currentPage < totalPages) {
+          renderPoItems(filteredItems, currentPage + 1);
+        }
+      });
+      paginationLinks.appendChild(nextLi);
+
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      paginationControls.style.display = 'flex';
+    } else {
+      paginationControls.style.display = 'none';
+    }
+  }
+
+  // Filter Items Based on Search Input
+  function filterItems() {
+    const searchTerm = searchInput.value.toLowerCase();
+    filteredItems = allItems.filter(item =>
+      item.materialNo.toLowerCase().includes(searchTerm) ||
+      item.description.toLowerCase().includes(searchTerm)
+    );
+    renderPoItems(filteredItems, 1);
+  }
+
+  // Get PO Details Button Click
+  getPoDetailsBtn.addEventListener('click', () => {
+    const selectedPo = poNumberSelect.value;
+    if (selectedPo && poData[selectedPo]) {
+      const { details, items } = poData[selectedPo];
+      renderPoDetails(details);
+      allItems = items;
+      filteredItems = items;
+      renderPoItems(filteredItems, 1);
+      poDetailsSection.style.display = 'block';
+      poItemsSection.style.display = 'block';
+    } else {
+      alert('Please select a valid PO Number');
+    }
+  });
+
+  // Search Input Event
+  searchInput.addEventListener('input', filterItems);
+
+  // ADD Button Click (Event Delegation)
+  poItemsTable.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add-btn')) {
+      selectedItem = JSON.parse(e.target.dataset.item);
+      shipmentQtyInput.value = selectedItem.pendingQty;
+      shipmentQtyInput.setAttribute('max', selectedItem.pendingQty);
+      shipmentQtyModal.show();
+    }
+  });
+
+  // Add to Shipment Items Button Click
+  addToShipmentBtn.addEventListener('click', () => {
+    const shipmentQty = parseInt(shipmentQtyInput.value);
+    if (shipmentQty > selectedItem.pendingQty) {
+      shipmentQtyError.textContent = 'Shipment Qty cannot exceed Pending Qty';
+      shipmentQtyInput.classList.add('is-invalid');
+    } else {
+      const shipmentItemsTable = document.querySelector('#shipmentItemsTable tbody');
+      let existingRow = null;
+      shipmentItemsTable.querySelectorAll('tr').forEach(row => {
+        if (row.cells[0].textContent == poNumberSelect.value && row.cells[1].textContent == selectedItem.seq) {
+          existingRow = row;
+        }
+      });
+      if (existingRow) {
+        existingRow.cells[6].textContent = shipmentQty;
+      } else {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${poNumberSelect.value}</td>
+		  <td>${selectedItem.seq}</td>
+          <td>${selectedItem.materialNo}</td>
+          <td>${selectedItem.description}</td>
+          <td>${selectedItem.poQty}</td>
+          <td>${selectedItem.plannedDelivery}</td>
+          <td>${shipmentQty}</td>
+          <td>
+            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+          </td>
+        `;
+        shipmentItemsTable.appendChild(newRow);
+      }
+
+      // Update Pending Qty and Refresh Table
+      //selectedItem.pendingQty -= shipmentQty;
+      //renderPoItems(filteredItems, currentPage);
+      shipmentQtyModal.hide();
+    }
+  });
+
+  // Clear Validation Error on Input Change
+  shipmentQtyInput.addEventListener('input', () => {
+    shipmentQtyInput.classList.remove('is-invalid');
+    shipmentQtyError.textContent = '';
+  });
+});
+</script>
+</body>
+</html>

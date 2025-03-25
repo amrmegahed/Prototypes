@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Purchase Order Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #385A7C;
+      --primary-light: #E0E8EF;
+      --primary-light-2: #F0F4F8;
+      --primary-dark: #2A4864;
+      --secondary-color: #50514f;
+      --accent-color: #c17817;
+      --danger-color: #d04925;
+      --success-color: #3e885b;
+      --background-color: #F8F8F8;
+      --card-color: #ffffff;
+      --border-color: #D1D1D1;
+      --text-color: #333333;
+      --text-secondary: #6c757d;
+      --border-radius: 6px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --transition: all 0.25s ease;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+
+      flex-direction: column;
+    }
+
+    .container-fluid {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .card-section {
+      background: var(--card-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+      border: 1px solid var(--border-color);
+    }
+
+    .card-section:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-section h4 {
+      color: var(--primary-color);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+      border-radius: var(--border-radius);
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      box-shadow: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 109, 122, 0.25);
+    }
+
+    .form-control:read-only, .form-control:disabled, .form-select:disabled {
+      background-color: var(--primary-light-2);
+      opacity: 0.85;
+    }
+
+    .btn {
+      border-radius: var(--border-radius);
+      padding: 0.45rem 1rem;
+      font-weight: 500;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    .nav-tabs {
+      border-bottom: none;
+      gap: 4px;
+    }
+
+    .nav-tabs .nav-link {
+      border: solid 1px var(--card-color);
+      background-color: var(--card-color);
+      color: var(--secondary-color);
+      border-radius: var(--border-radius);
+      padding: 0.65rem 1rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      transition: var(--transition);
+      margin: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--box-shadow);
+      font-size: 0.9rem;
+    }
+
+    .nav-tabs .nav-link:hover {
+      color: var(--primary-color);
+      background-color: var(--primary-light);
+      border-color: var(--border-color);
+    }
+
+    .nav-tabs .nav-link.active {
+      color: white;
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    .tab-content {
+      padding-right: 15px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .table {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      font-size: 0.9rem;
+    }
+
+    .table th {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      border-bottom: none;
+      padding: 0.75rem;
+    }
+
+    .table td {
+      vertical-align: middle;
+      padding: 0.65rem 0.75rem;
+    }
+
+    .table-bordered th, .table-bordered td {
+      border-color: var(--border-color);
+    }
+
+    .table tbody tr {
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .table-responsive {
+      border-radius: var(--border-radius);
+    }
+
+    @media (max-width: 768px) {
+      .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+      }
+      .card-section {
+        padding: 1rem;
+      }
+      .fixed-action-bar {
+        padding: 0.75rem 1rem;
+      }
+      .btn {
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid" style="margin-top: 1.5rem;">
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs" id="purchaseOrderTab" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="po-overview-tab" data-bs-toggle="tab" data-bs-target="#po-overview" type="button" role="tab" aria-controls="po-overview" aria-selected="true">
+          <i class="fas fa-file-invoice"></i> Overview
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab" aria-controls="documents" aria-selected="false">
+          <i class="fas fa-file-alt"></i> Documents
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="purchaseOrderTabContent">
+      <!-- Purchase Order Details Tab -->
+      <div class="tab-pane fade show active" id="po-overview" role="tabpanel" aria-labelledby="po-overview-tab">
+        <div class="mt-3">
+          <!-- PO Details -->
+          <div class="card-section">
+            <h4><i class="fas fa-info-circle"></i> PO Details</h4>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="poNumber" class="form-label">PO Number</label>
+                <input type="text" class="form-control" id="poNumber" value="470061584" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="poDate" class="form-label">PO Date</label>
+                <input type="date" class="form-control" id="poDate" value="2023-04-20" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="deliveryStatus" class="form-label">Delivery Status</label>
+                <select class="form-select" id="deliveryStatus">
+                  <option>Partially Received</option>
+                  <option>Pending</option>
+                  <option>Completed</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="supplierName" class="form-label">Supplier Name</label>
+                <select class="form-select" id="supplierName" disabled>
+                  <option>Huawei International</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="supplierId" class="form-label">Supplier ID</label>
+                <input type="text" class="form-control" id="supplierId" value="400138254" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="createdBy" class="form-label">Created By</label>
+                <input type="text" class="form-control" id="createdBy" value="Nourhan Yehia" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" disabled>
+                  <option>Network</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="company" class="form-label">Company</label>
+                <select class="form-select" id="company" disabled>
+                  <option>VF Data</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="businessOwner" class="form-label">Business Owner</label>
+                <input type="text" class="form-control" id="businessOwner" value="Mohamed AbouElDin" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="sourceSystem" class="form-label">Source System</label>
+                <select class="form-select" id="sourceSystem" disabled>
+                  <option>SAP</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="incoTerm" class="form-label">IncoTerm</label>
+                <select class="form-select" id="incoTerm">
+                  <option>FOB</option>
+                  <option>CIF</option>
+                  <option>EXW</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="shipToLocation" class="form-label">Ship To Location</label>
+                <select class="form-select" id="shipToLocation">
+                  <option>Data Val Plant</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="poValue" class="form-label">PO Value</label>
+                <input type="number" class="form-control" id="poValue" value="71000" readonly>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="poCurrency" class="form-label">PO Currency</label>
+                <select class="form-select" id="poCurrency">
+                  <option>EUR</option>
+                  <option>USD</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PO Items Section -->
+          <div class="card-section">
+            <h4><i class="fas fa-list"></i> PO Items</h4>
+            <div class="mb-3">
+              <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Item</button>
+              <button class="btn btn-danger"><i class="fas fa-trash"></i> Delete Item</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox"></th>
+                    <th>Seq. No.</th>
+                    <th>Item / Material No.</th>
+                    <th>Item Description</th>
+                    <th>PO Qty</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                    <th>Planned Delivery Date</th>
+                    <th>Pending Qty</th>
+                    <th>In Progress Qty</th>
+                    <th>Received Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>1</td>
+                    <td>5567774111</td>
+                    <td>Telecom Equipment 1</td>
+                    <td>30</td>
+                    <td>1000</td>
+                    <td>30000</td>
+                    <td>10/08/2025</td>
+                    <td>15</td>
+                    <td>10</td>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>2</td>
+                    <td>1237774222</td>
+                    <td>Telecom Equipment 2</td>
+                    <td>7</td>
+                    <td>2000</td>
+                    <td>14000</td>
+                    <td>20/08/2025</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>3</td>
+                    <td>9877774333</td>
+                    <td>Telecom Equipment 3</td>
+                    <td>4</td>
+                    <td>3000</td>
+                    <td>12000</td>
+                    <td>30/08/2025</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>4</td>
+                    <td>5567676</td>
+                    <td>Telecom Equipment 4</td>
+                    <td>3</td>
+                    <td>3000</td>
+                    <td>9000</td>
+                    <td>30/07/2025</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td>5</td>
+                    <td>898767</td>
+                    <td>Telecom Equipment 5</td>
+                    <td>2</td>
+                    <td>3000</td>
+                    <td>6000</td>
+                    <td>30/08/2025</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-between mt-2">
+                <span class="text-secondary">Showing 1 to 5 of 10 entries</span>
+                <nav aria-label="Page navigation">
+                  <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Shipments Section -->
+          <div class="card-section">
+            <h4><i class="fas fa-truck"></i> Related Shipments</h4>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>BL/AWB No.</th>
+                    <th>Shipment Stage</th>
+                    <th>Creation Date</th>
+                    <th>Release Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>33444333</td>
+                    <td>Released</td>
+                    <td>26/02/2025</td>
+                    <td>25/02/2025</td>
+                  </tr>
+                  <tr>
+                    <td>N/A</td>
+                    <td>In Progress</td>
+                    <td>26/02/2025</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>3874773</td>
+                    <td>In Progress</td>
+                    <td>25/02/2025</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Additional Notes Section -->
+          <div class="card-section">
+            <h4><i class="fas fa-sticky-note"></i> Additional Notes</h4>
+            <div class="mb-3">
+              <textarea class="form-control" id="additionalNotes" rows="3" placeholder="Additional notes to be manually entered by user"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+	  <!-- Documents Tab -->
+      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+		  <div class="mt-3">
+			<!-- Attached Documents -->
+			<div class="card-section">
+			  <h4><i class="fas fa-file"></i> Attached Documents</h4>
+			  <div class="mb-3">
+				<button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Document</button>
+			  </div>
+			  <div class="table-responsive">
+				<table class="table table-bordered table-hover">
+				  <thead>
+					<tr>
+					  <th>Document Name</th>
+					  <th>Document Type</th>
+					  <th>Actions</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <td>invoice.pdf</td>
+					  <td>Original Certified Invoice</td>
+					  <td>
+						<button class="btn btn-sm btn-outline-secondary" title="View"><i class="fas fa-eye"></i></button>
+						<button class="btn btn-sm btn-outline-primary" title="Download"><i class="fas fa-download"></i></button>
+						<button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+					  </td>
+					</tr>
+				  </tbody>
+				</table>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	</div>
+  </div>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
