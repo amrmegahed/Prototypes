@@ -1,0 +1,740 @@
+openapi: 3.0.3
+info:
+  title: Document Management API - DRAFT
+  description: |
+    REST API for managing DCCI Services Attachments on Jupiter ECM. This API allows users to:
+    - Open/create Service Request folders based on various service parameters
+    - Upload documents with specific document types
+    - Download documents
+    - Delete individual documents or multiple documents
+    - List document types available for upload
+    
+    All operations require WSO2 token authentication and handle encrypted input parameters for security.
+  version: 0.0.1
+  contact:
+    name: API Support
+    email: amr.megahed@asset.com.eg
+
+servers:
+  - url: https://api.dubaichamber.com/v1
+    description: Production server
+  - url: https://staging-api.dubaichamber.com/v1
+    description: Staging server
+  - url: https://dev-api.dubaichamber.com/v1
+    description: Development server
+
+security:
+  - WSO2Bearer: []
+
+paths:
+  /folders/open:
+    post:
+      tags:
+        - Folder Management
+      summary: Open or create a service folder
+      description: |
+        Opens an existing dcci service folder or creates a new one if it doesn't exist.
+        Returns folder information, attached documents, and available document types.
+        All input parameters are encrypted for security.
+      operationId: openFolder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenFolderRequest'
+            examples:
+              membership_service:
+                summary: Membership Service Example
+                value:
+                  serviceType: "Wlznubyx"
+                  srNumber: ";8>@>GEAKCENI"
+                  memNumber: ";=EE"
+                  lang: "OYS"
+                  validation: "<;>B>DBIDDHK"
+              mediation_service:
+                summary: Mediation Service Example
+                value:
+                  serviceType: "WPPVOcY``"
+                  srNumber: ";8>@>GEAKCENI"
+                  caseNo: ">:>=@D=ew"
+                  userType: "Mediator"
+                  lang: "OYS"
+                  validation: "<;>B>DBIDDHK"
+      responses:
+        '200':
+          description: Folder opened/created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenFolderResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /documents/upload:
+    post:
+      tags:
+        - Document Management
+      summary: Upload a document to a folder
+      description: |
+        Uploads a document to the specified folder with the selected document type.
+        The user must select a valid document type during upload.
+      operationId: uploadDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadDocumentRequest'
+      responses:
+        '201':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadDocumentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '413':
+          description: File size exceeds limit (5MB)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /documents/{documentId}/download:
+    get:
+      tags:
+        - Document Management
+      summary: Download a document
+      description: Downloads the specified document file
+      operationId: downloadDocument
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          description: The ID of the document to download
+          schema:
+            type: string
+        - name: folderId
+          in: query
+          required: true
+          description: The ID of the parent folder
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document downloaded successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              description: Attachment filename
+              schema:
+                type: string
+                example: 'attachment; filename="document.pdf"'
+            Content-Type:
+              description: MIME type of the file
+              schema:
+                type: string
+                example: 'application/pdf'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /documents/{documentId}:
+    delete:
+      tags:
+        - Document Management
+      summary: Delete a single document
+      description: Deletes the specified document if the user has permission
+      operationId: deleteDocument
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          description: The ID of the document to delete
+          schema:
+            type: string
+        - name: folderId
+          in: query
+          required: true
+          description: The ID of the parent folder
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /documents/bulk-delete:
+    post:
+      tags:
+        - Document Management
+      summary: Delete multiple documents
+      description: |
+        Deletes multiple documents that the user has permission to delete.
+        This is used for the "Delete All" functionality.
+      operationId: deleteAllDocuments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkDeleteRequest'
+      responses:
+        '200':
+          description: Documents deletion completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /document-types:
+    get:
+      tags:
+        - Reference Data
+      summary: Get available document types
+      description: |
+        Retrieves the list of all available document types for upload.
+        This is typically called when the user first opens the application.
+      operationId: getDocumentTypes
+      parameters:
+        - name: serviceType
+          in: query
+          required: true
+          description: Encrypted value for service type
+          schema:
+            type: string
+        - name: validation
+          in: query
+          required: true
+          description: Encrypted value for validation timestamp
+          schema:
+            type: string
+        - name: mot
+          in: query
+          required: false
+          description: Encrypted value for Mode of Transport (applicable only in COO service)
+          schema:
+            type: string
+        - name: licCatg
+          in: query
+          required: false
+          description: Encrypted value for License Category (applicable only in DCCI Membership Manage Signatories service)
+          schema:
+            type: string
+        - name: svsSubject
+          in: query
+          required: false
+          description: Encrypted value for SVS Subject (applicable only in DCCI SVS service)
+          schema:
+            type: string
+        - name: subType
+          in: query
+          required: false
+          description: Encrypted value for SubType (applicable only in DCCI ATA Claim service)
+          schema:
+            type: string
+        - name: userType
+          in: query
+          required: false
+          description: Encrypted value for userType (applicable in DCCI ATA Claim service & Mediation Case service)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document types retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentTypesResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    WSO2Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: WSO2 Bearer token authentication
+
+  schemas:
+    OpenFolderRequest:
+      type: object
+      required:
+        - serviceType
+        - srNumber
+        - validation
+      properties:
+        serviceType:
+          type: string
+          description: Encrypted value for service type
+          example: "Wlznubyx"
+        srNumber:
+          type: string
+          description: Encrypted value for SR Number
+          example: ";8>@>GEAKCENI"
+        validation:
+          type: string
+          description: Encrypted value for validation timestamp
+          example: "<;>B>DBIDDHK"
+        caseNo:
+          type: string
+          description: Encrypted value for Case No (applicable only in Mediation Service)
+          example: ">:>=@D=ew"
+        memNumber:
+          type: string
+          description: Encrypted value for Member Number (applicable in Membership & Service Excellence Programme services)
+          example: ";=EE"
+        mot:
+          type: string
+          description: Encrypted value for Mode of Transport (applicable only in COO service)
+          example: "Kt~"
+        licCatg:
+          type: string
+          description: Encrypted value for License Category (applicable only in DCCI Membership Manage Signatories service)
+          example: "XQf"
+        svsSubject:
+          type: string
+          description: Encrypted value for SVS Subject (applicable only in DCCI SVS service)
+          example: "eyJhbGciO"
+        subType:
+          type: string
+          description: Encrypted value for SubType (applicable only in DCCI ATA Claim service)
+          example: "PZ^RWV^1U_U^c"
+        userType:
+          type: string
+          description: Encrypted value for userType (applicable in DCCI ATA Claim service & Mediation Case service)
+          example: "Mediator"
+        lang:
+          type: string
+          default: "OYS"
+          description: Encrypted value for language
+          example: "OYS"
+        includeDocumentTypes:
+          type: boolean
+          default: false
+          description: returns list of document types allowed to be attached for this DCCI service
+          example: true
+
+    OpenFolderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Folder opened successfully"
+        data:
+          type: object
+          properties:
+            folderId:
+              type: string
+              description: The unique identifier of the folder
+              example: "UG8838529"
+            parentId:
+              type: string
+              description: The identifier of the folder parent
+              example: "UG134"
+            parentType:
+              type: integer
+              minimum: 1
+              maximum: 2
+              description: The identifier of the folder parent type
+              example: 2
+            isNewFolder:
+              type: boolean
+              description: Indicates if this is a newly created folder
+              example: false
+            openMode:
+              type: string
+              enum: [R, RW]
+              description: Open mode of the folder whether R -> Read Only or RW -> Read/Write
+              example: "R"
+            documents:
+              type: array
+              items:
+                $ref: '#/components/schemas/Document'
+            allowedDocumentTypes:
+              type: array
+              items:
+                $ref: '#/components/schemas/DocumentType'
+
+    Document:
+      type: object
+      properties:
+        documentId:
+          type: string
+          description: The unique identifier of the document
+          example: "UG345654529"
+        label:
+          type: string
+          description: The file label on Jupiter
+          example: "Invoices"
+        documentType:
+          type: string
+          description: The type of document
+          example: "Invoices"
+        uploadedBy:
+          type: string
+          description: Who uploaded the document used only in Mediation and ATA Claim services
+          example: "Complainant"
+        uploadedDate:
+          type: string
+          format: date-time
+          description: When the document was uploaded
+          example: "2025-06-25T10:52:55Z"
+        status:
+          type: string
+          enum: [Awaiting for approval, Approved, Rejected]
+          description: The approval status of the document
+          example: "Awaiting for approval"
+        fileSize:
+          type: integer
+          description: File size in bytes
+          example: 1048576
+        mimeType:
+          type: string
+          description: MIME type of the file
+          example: "application/pdf"
+        canDelete:
+          type: boolean
+          description: Whether the current user can delete this document
+          example: true
+
+    DocumentType:
+      type: object
+      properties:
+        nameEn:
+          type: string
+          description: The English Name of the document type
+          example: "COO_Invoice"
+        nameAr:
+          type: string
+          description: The Arabic name of the document type
+          example: "الفاتورة"
+        description:
+          type: string
+          description: Description of the document type
+          example: "Invoice documents for billing purposes"
+        canUploadMultiple:
+          type: boolean
+          description: Multiple uploads for this Document Type is allowed or not
+          example: false
+        canUploadSignedPdf:
+          type: boolean
+          description: Digitally Signed PDF uploads is allowed or not
+          example: false
+        allowedMimeTypes:
+          type: array
+          items:
+            type: string
+          description: List of allowed MIME types for this document type
+          example: ["application/pdf", "image/jpeg", "image/png"]
+
+    UploadDocumentRequest:
+      type: object
+      required:
+        - file
+        - documentTypeNameEn
+        - folderId
+        - parentId
+        - parentType
+        - serviceType
+        - validation
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The document file to upload (max 5MB)
+        documentTypeNameEn:
+          type: string
+          description: The English Name of the Document Type being uploaded
+          example: "Invoices"
+        folderId:
+          type: string
+          description: The ID of the folder to upload to
+          example: "UG8838529"
+        parentId:
+          type: string
+          description: The parent ID of the request folder on Jupiter
+          example: "UG134"
+        parentType:
+          type: integer
+          minimum: 1
+          maximum: 2
+          description: The identifier of the folder parent Type
+          example: "UG134"
+        serviceType:
+          type: string
+          description: Encrypted value for service type
+          example: "Wlznubyx"
+        validation:
+          type: string
+          description: Encrypted value for validation timestamp
+          example: "<;>B>DBIDDHK"
+        userType:
+          type: string
+          description: Encrypted value for userType (applicable in DCCI ATA Claim service & Mediation Case service)
+          example: "Mediator"
+        externalStampLoc:
+          type: string
+          enum: [C, L, R]
+          description: Stamp location to be placed on the document (applicable only in DCCI COO service)
+          example: "L"
+
+    UploadDocumentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Document uploaded successfully"
+        data:
+          $ref: '#/components/schemas/Document'
+
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Document deleted successfully"
+
+    BulkDeleteRequest:
+      type: object
+      required:
+        - documentIds
+        - folderId
+        - validation
+      properties:
+        documentIds:
+          type: array
+          items:
+            type: string
+          description: List of document IDs to delete
+          example: ["UG5345323", "UG334334354"]
+        folderId:
+          type: string
+          description: The ID of the parent folder
+          example: "UG8838529"
+        validation:
+          type: string
+          description: Encrypted value for validation timestamp
+          example: "<;>B>DBIDDHK"
+
+    BulkDeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Bulk delete completed"
+        data:
+          type: object
+          properties:
+            totalRequested:
+              type: integer
+              description: Total number of documents requested for deletion
+              example: 5
+            successfulDeletes:
+              type: integer
+              description: Number of documents successfully deleted
+              example: 4
+            failedDeletes:
+              type: integer
+              description: Number of documents that failed to delete
+              example: 1
+            deletedDocuments:
+              type: array
+              items:
+                type: string
+              description: List of successfully deleted document IDs
+              example: ["456e7890-e89b-12d3-a456-426614174001"]
+            failedDocuments:
+              type: array
+              items:
+                type: object
+                properties:
+                  documentId:
+                    type: string
+                  reason:
+                    type: string
+              description: List of documents that failed to delete with reasons
+              example: [{"documentId": "456e7890-e89b-12d3-a456-426614174002", "reason": "Insufficient permissions"}]
+
+    DocumentTypesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Document types retrieved successfully"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentType'
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Required field 'serviceType' is missing"
+            details:
+              type: array
+              items:
+                type: string
+              description: Additional error details
+              example: ["serviceType is required", "validation parameter is invalid"]
+        timestamp:
+          type: string
+          format: date-time
+          description: When the error occurred
+          example: "2025-06-25T10:52:55Z"
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid input parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "BAD_REQUEST"
+              message: "Invalid input parameters"
+              details: ["serviceType is required"]
+            timestamp: "2025-06-25T10:52:55Z"
+
+    Unauthorized:
+      description: Unauthorized - Invalid or missing WSO2 token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "UNAUTHORIZED"
+              message: "Invalid or missing authentication token"
+              details: ["WSO2 token is required"]
+            timestamp: "2025-06-25T10:52:55Z"
+
+    Forbidden:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "FORBIDDEN"
+              message: "Insufficient permissions to perform this action"
+              details: ["User does not have delete permissions"]
+            timestamp: "2025-06-25T10:52:55Z"
+
+    NotFound:
+      description: Not found - Resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "NOT_FOUND"
+              message: "Document not found"
+              details: ["Document with ID 456e7890-e89b-12d3-a456-426614174001 does not exist"]
+            timestamp: "2025-06-25T10:52:55Z"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "INTERNAL_SERVER_ERROR"
+              message: "An unexpected error occurred"
+              details: ["Please try again later or contact support"]
+            timestamp: "2025-06-25T10:52:55Z"
+
+tags:
+  - name: Folder Management
+    description: Operations related to opening and managing service folders
+  - name: Document Management
+    description: Operations for uploading, downloading, and deleting documents
+  - name: Reference Data
+    description: Operations for retrieving reference data like document types
